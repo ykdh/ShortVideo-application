@@ -3,6 +3,7 @@ package com.example.shortvideoapp;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,24 +23,26 @@ import okhttp3.Response;
 public class MainActivity extends AppCompatActivity {
 
     private List<VideoInfo> videoList = new ArrayList<>();
-    private int flag=0;
+    private int flag = 0;
+    private RecyclerView mVideoListView;
+    private ItemAdapter itemAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        okHttpData();
-        while(flag==0);
 
-        Log.d("List",String.valueOf(videoList.size()));
-        for(int i=0;i<videoList.size();i++){
-            Log.d("List",videoList.get(i).getId());
-            Log.d("List",videoList.get(i).getFeedUrl());
-            Log.d("List",videoList.get(i).getNickName());
-            Log.d("List",videoList.get(i).getDescription());
-            Log.d("List",videoList.get(i).getLikeCount());
-            Log.d("List",videoList.get(i).getAvatar());
-        }
+        mVideoListView = findViewById(R.id.rv_list);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        mVideoListView.setLayoutManager(layoutManager);
+        mVideoListView.setHasFixedSize(true);
+
+        okHttpData();
+        while (flag == 0) ;
+
+        itemAdapter = new ItemAdapter(videoList, this);
+        mVideoListView.setAdapter(itemAdapter);
     }
 
     //获取json内容
@@ -54,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
                     Response response = client.newCall(request).execute();
                     String data = response.body().string();
                     parseJsonString(data);
-                    flag=1;
+                    flag = 1;
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -77,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
                     String avatar = jsonArray.getJSONObject(i).getString("avatar");
 
                     //放进list
-                    VideoInfo videoInfo=new VideoInfo();
+                    VideoInfo videoInfo = new VideoInfo();
                     videoInfo.setId(id);
                     videoInfo.setFeedUrl(feedUrl);
                     videoInfo.setNickName(nickName);
