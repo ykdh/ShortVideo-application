@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.VideoView;
@@ -18,6 +19,7 @@ public class VideoActivity extends AppCompatActivity {
     private VideoView videoView;
     private ImageView ivAvatar;
     private ImageView ivHeart;
+    private ImageView pause;
     private TextView tvNickName;
     private TextView tvDescription;
     private TextView tvLikeCount;
@@ -30,6 +32,7 @@ public class VideoActivity extends AppCompatActivity {
         videoView = findViewById(R.id.video);
         ivAvatar = findViewById(R.id.ivAvatar);
         ivHeart = findViewById(R.id.ivHeart);
+        pause = findViewById(R.id.pause);
         tvNickName = findViewById(R.id.tvNickName);
         tvDescription = findViewById(R.id.tvDescription);
         tvLikeCount = findViewById(R.id.tvLikeCount);
@@ -53,6 +56,21 @@ public class VideoActivity extends AppCompatActivity {
                 .apply(RequestOptions.bitmapTransform(new CircleCrop())
                         .error(R.mipmap.failure).placeholder(R.mipmap.loading))
                 .into(ivAvatar);
+        videoView.setVideoPath(feedUrl);
+        videoView.requestFocus();
+        videoView.start();
+        videoView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (videoView.isPlaying()) {
+                    videoView.pause();
+                    pause.setVisibility(View.VISIBLE);
+                } else {
+                    videoView.start();
+                    pause.setVisibility(View.INVISIBLE);
+                }
+            }
+        });
     }
 
 }
