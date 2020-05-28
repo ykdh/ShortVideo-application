@@ -1,5 +1,7 @@
 package com.example.shortvideoapp;
 
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
@@ -44,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
         itemAdapter = new ItemAdapter(videoList, this);
         mVideoListView.setAdapter(itemAdapter);
     }
+
 
     //获取json内容
     private void okHttpData() {

@@ -1,6 +1,7 @@
 package com.example.shortvideoapp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -40,11 +41,11 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
+    public void onBindViewHolder(@NonNull final ViewHolder viewHolder, int i) {
         final VideoInfo videoInfo = videoList.get(i);
-        viewHolder.description.setText("  " + videoInfo.getDescription());
-        viewHolder.like.setText("♥ " + videoInfo.getLikeCount() + "  ");
-        String feedUrl = videoInfo.getFeedUrl();
+        viewHolder.description.setText(videoInfo.getDescription());
+        viewHolder.like.setText(videoInfo.getLikeCount());
+        final String feedUrl = videoInfo.getFeedUrl();
 
         //封面图
         Glide.with(context).setDefaultRequestOptions(new RequestOptions()
@@ -52,6 +53,22 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
                 .load(feedUrl).into(viewHolder.cover);
 
         //点击事件
+        viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent = new Intent(context, VideoActivity.class);
+                //视频url 头像url 用户名 描述 喜欢数
+                intent.putExtra("feedUrl", feedUrl);
+                intent.putExtra("avatar", videoInfo.getAvatar());
+                intent.putExtra("nickName", videoInfo.getNickName());
+                intent.putExtra("description", videoInfo.getDescription());
+                intent.putExtra("likeCount", videoInfo.getLikeCount());
+
+                context.startActivity(intent);
+            }
+        });
+
 
     }
 
