@@ -1,28 +1,22 @@
 package com.example.shortvideoapp;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.gesture.GestureOverlayView;
+import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.GestureDetector;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.VideoView;
 
-import android.view.GestureDetector.OnGestureListener;
-
-import android.view.GestureDetector;
-import android.view.MotionEvent;
-
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.bumptech.glide.request.RequestOptions;
+
 
 public class VideoActivity extends AppCompatActivity {
 
@@ -34,7 +28,8 @@ public class VideoActivity extends AppCompatActivity {
     private TextView tvDescription;
     private TextView tvLikeCount;
     private FrameLayout frameLayout;
-    private GestureDetector gestureDetector;
+    private int clickCount = 0;
+    private Handler handler;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -58,13 +53,12 @@ public class VideoActivity extends AppCompatActivity {
         String description = intent.getStringExtra("description");
         String likeCount = intent.getStringExtra("likeCount");
 
-        Log.d("接收intent", nickName);
-
         //显示
         tvNickName.setText("@" + nickName);
         tvDescription.setText(description);
         tvLikeCount.setText(likeCount);
 
+        //爱心
         ivHeart.setImageResource(R.mipmap.like0);
         ivHeart.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -77,27 +71,48 @@ public class VideoActivity extends AppCompatActivity {
             }
         });
 
+        //头像
         Glide.with(this).load(avatar)
                 .apply(RequestOptions.bitmapTransform(new CircleCrop())
                         .error(R.mipmap.failure).placeholder(R.mipmap.loading))
                 .into(ivAvatar);
 
+        //视频循环播放
         videoView.setVideoPath(feedUrl);
         videoView.requestFocus();
-        videoView.start();
-        frameLayout.setOnClickListener(new View.OnClickListener() {
+        videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
-            public void onClick(View v) {
-                if (videoView.isPlaying()) {
-                    videoView.pause();
-                    pause.setVisibility(View.VISIBLE);
-                } else {
-                    videoView.start();
-                    pause.setVisibility(View.INVISIBLE);
-                }
+            public void onPrepared(MediaPlayer mp) {
+                mp.start();
+                mp.setLooping(true);
             }
         });
 
+        //单击暂停/播放，双击出现爱心
+        frameLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                clickCount++;
+                handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (clickCount == 1) {
+                            if (videoView.isPlaying()) {
+                                videoView.pause();
+                                pause.setVisibility(View.VISIBLE);
+                            } else {
+                                videoView.start();
+                                pause.setVisibility(View.INVISIBLE);
+                            }
+                        } else if (clickCount == 2) {
+                            ivHeart.setImageResource(R.mipmap.like1);
+                        }
+                        handler.removeCallbacksAndMessages(null);
+                        clickCount = 0;
+                    }
+                }, 500);
+            }
+        });
     }
-
 }
