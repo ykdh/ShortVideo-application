@@ -4,7 +4,7 @@
     package="com.example.shortvideoapp">
 
     <uses-permission android:name="android.permission.INTERNET"></uses-permission>
-    <uses-sdk tools:overrideLibrary="com.yqw.hotheart"/>
+    <uses-sdk tools:overrideLibrary="com.yqw.hotheart" />
 
     <application
         android:allowBackup="true"

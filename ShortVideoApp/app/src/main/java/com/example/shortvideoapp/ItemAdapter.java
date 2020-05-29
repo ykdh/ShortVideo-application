@@ -15,10 +15,10 @@ import com.bumptech.glide.request.RequestOptions;
 
 import java.util.List;
 
+
 public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
 
     private List<VideoInfo> videoList;
-    private static final String TAG = "DouAdapter";
     private Context context;
 
     public ItemAdapter(List<VideoInfo> list, Context context) {
@@ -43,9 +43,21 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder viewHolder, int i) {
         final VideoInfo videoInfo = videoList.get(i);
-        viewHolder.description.setText(videoInfo.getDescription());
-        viewHolder.like.setText(videoInfo.getLikeCount());
         final String feedUrl = videoInfo.getFeedUrl();
+
+        //描述
+        viewHolder.description.setText(videoInfo.getDescription());
+
+        //喜欢数
+        int tmpLike = Integer.parseInt(videoInfo.getLikeCount());
+        if (tmpLike >= 10000) {
+            int like1 = tmpLike / 10000;
+            int like2 = (tmpLike % 10000) / 1000;
+            String text = like1 + "." + like2 + "w";
+            viewHolder.like.setText(text);
+        } else {
+            viewHolder.like.setText(videoInfo.getLikeCount());
+        }
 
         //封面图
         Glide.with(context).setDefaultRequestOptions(new RequestOptions()
@@ -58,7 +70,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
             public void onClick(View v) {
                 Intent intent = new Intent();
                 intent = new Intent(context, VideoActivity.class);
-                //视频url 头像url 用户名 描述 喜欢数
+
                 intent.putExtra("feedUrl", feedUrl);
                 intent.putExtra("avatar", videoInfo.getAvatar());
                 intent.putExtra("nickName", videoInfo.getNickName());
@@ -68,8 +80,6 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
                 context.startActivity(intent);
             }
         });
-
-
     }
 
     @Override
@@ -78,8 +88,6 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-
-        //封面图、描述、喜欢数
         private final ImageView cover;
         private final TextView description;
         private final TextView like;

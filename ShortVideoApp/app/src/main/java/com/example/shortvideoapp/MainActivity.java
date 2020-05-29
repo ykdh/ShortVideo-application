@@ -1,14 +1,11 @@
 package com.example.shortvideoapp;
 
-import android.content.pm.ActivityInfo;
-import android.content.res.Configuration;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.os.Bundle;
-import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -47,7 +44,6 @@ public class MainActivity extends AppCompatActivity {
         mVideoListView.setAdapter(itemAdapter);
     }
 
-
     //获取json内容
     private void okHttpData() {
         new Thread(new Runnable() {
@@ -67,7 +63,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }).start();
     }
-
 
     //解析json内容
     private void parseJsonString(String data) {

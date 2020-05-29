@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -53,10 +52,20 @@ public class VideoActivity extends AppCompatActivity {
         String description = intent.getStringExtra("description");
         String likeCount = intent.getStringExtra("likeCount");
 
-        //显示
+        //显示用户名和描述
         tvNickName.setText("@" + nickName);
         tvDescription.setText(description);
-        tvLikeCount.setText(likeCount);
+
+        //喜欢数
+        int tmpLike = Integer.parseInt(likeCount);
+        if (tmpLike >= 10000) {
+            int like1 = tmpLike / 10000;
+            int like2 = (tmpLike % 10000) / 1000;
+            String text = like1 + "." + like2 + "w";
+            tvLikeCount.setText(text);
+        } else {
+            tvLikeCount.setText(likeCount);
+        }
 
         //爱心
         ivHeart.setImageResource(R.mipmap.like0);
