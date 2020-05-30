@@ -2,19 +2,23 @@ package com.example.shortvideoapp;
 
 import android.content.Intent;
 import android.media.MediaPlayer;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.VideoView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.bumptech.glide.request.RequestOptions;
+import com.github.ybq.android.spinkit.SpinKitView;
 
 
 public class VideoActivity extends AppCompatActivity {
@@ -29,7 +33,9 @@ public class VideoActivity extends AppCompatActivity {
     private FrameLayout frameLayout;
     private int clickCount = 0;
     private Handler handler;
+    private SpinKitView spinKitView;
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +49,7 @@ public class VideoActivity extends AppCompatActivity {
         tvDescription = findViewById(R.id.tvDescription);
         tvLikeCount = findViewById(R.id.tvLikeCount);
         frameLayout = findViewById(R.id.thisVideo);
+        spinKitView = findViewById(R.id.spinKit);
 
         //接收数据
         Intent intent = getIntent();
@@ -86,9 +93,24 @@ public class VideoActivity extends AppCompatActivity {
                         .error(R.mipmap.failure).placeholder(R.mipmap.loading))
                 .into(ivAvatar);
 
-        //视频循环播放
+        //视频
         videoView.setVideoPath(feedUrl);
         videoView.requestFocus();
+        //加载动画
+        videoView.setOnInfoListener(new MediaPlayer.OnInfoListener() {
+            @Override
+            public boolean onInfo(MediaPlayer mp, int what, int extra) {
+                if (what == MediaPlayer.MEDIA_INFO_BUFFERING_START) {
+                    //动画
+                    spinKitView.setVisibility(SpinKitView.VISIBLE);
+                } else {
+                    //停止
+                    spinKitView.setVisibility(SpinKitView.GONE);
+                }
+                return true;
+            }
+        });
+        //循环播放
         videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
             public void onPrepared(MediaPlayer mp) {

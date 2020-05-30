@@ -36,4 +36,5 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp:3.10.0'
     implementation 'com.github.bumptech.glide:glide:4.0.0'
     implementation 'com.github.KevinYou128:HotHeart:v1.2'
+    implementation 'com.github.ybq:Android-SpinKit:1.0.1'
 }

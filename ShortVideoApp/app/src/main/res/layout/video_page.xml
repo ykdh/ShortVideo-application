@@ -33,9 +33,15 @@
             app:heart_degrees_interval_max="20"
             app:heart_degrees_interval_min="-20"
             app:heart_swipe_image="@mipmap/like1"
-            tools:content=".VideoActivity">
+            tools:content=".VideoActivity" />
 
-        </com.yqw.hotheart.HeartFrameLayout>
+        <com.github.ybq.android.spinkit.SpinKitView xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/spinKit"
+            style="@style/SpinKitView.Large.FadingCircle"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center"
+            app:SpinKit_Color="#ffffff" />
 
         <LinearLayout
             android:id="@+id/listView1"
